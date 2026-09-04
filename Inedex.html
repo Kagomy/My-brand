@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>KIMI Exam Tracker - فيديو تفاعلي</title>
+    <!-- Google Fonts (Arabic + English) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0f1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+        }
+
+        /* حاوية الفيديو */
+        .video-container {
+            width: 390px;
+            height: 780px;
+            background: linear-gradient(145deg, #111827, #1a2332);
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px #2a3a55 inset;
+            border: 1px solid #3b4e6b;
+        }
+
+        /* الشريحة الواحدة */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px 20px;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(180deg, #111827, #1e2a3a);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* شريط التقدم في الفيديو */
+        .progress-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: #2a3a55;
+            border-radius: 10px;
+            z-index: 99;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            border-radius: 10px;
+            transition: width 0.2s linear;
+        }
+
+        /* عناصر مشتركة */
+        .title-lg {
+            font-size: 34px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f0c27f, #fc5c7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .sub {
+            font-size: 18px;
+            color: #b0c4de;
+            font-weight: 400;
+        }
+
+        .highlight-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin: 8px 0;
+        }
+
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .badge {
+            background: #2a3a55;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #f0c27f;
+            border: 1px solid #f0c27f44;
+        }
+
+        .xp-number {
+            font-size: 48px;
+            font-weight: 900;
+            color: #00d2ff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fc5c7d, #6a82fb);
+            padding: 16px 40px;
+            border-radius: 60px;
+            color: #fff;
+            font-weight: 900;
+            font-size: 22px;
+            border: none;
+            box-shadow: 0 10px 30px #fc5c7d55;
+            margin-top: 20px;
+            cursor: default;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+        .stat-card {
+            background: #1e2a3a;
+            border-radius: 16px;
+            padding: 12px;
+            border-left: 4px solid #00d2ff;
+        }
+        .stat-card .num {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .table-mini {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        .table-mini td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #2a3a55;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0;
+        }
+        .chart-bar .label {
+            width: 70px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .chart-bar .line {
+            flex: 1;
+            height: 10px;
+            background: #2a3a55;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .chart-bar .fill {
+            height: 100%;
+            border-radius: 20px;
+            width: 0%;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, #f0c27f, #fc5c7d);
+        }
+
+        .slide.active .fill {
+            width: var(--target) !important;
+        }
+
+        /* تنسيق للأيقونات */
+        .emoji-big {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Scroll styling */
+        .slide::-webkit-scrollbar { width: 0; }
+
+        /* التأكد من ظهور النصوص */
+        .arabic-text { direction: rtl; }
+        .english-text { direction: ltr; }
+
+        /* تنسيق الجدول */
+        .status-done {
+            color: #4ade80;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<div class="video-container" id="videoContainer">
+    <!-- شرائح الفيديو (كل شريحة = مشهد) -->
+
+    <!-- SLIDE 1: الافتتاحية -->
+    <div class="slide active" data-index="0">
+        <div style="margin-top: -30px;">
+            <div style="font-size: 70px; font-weight: 900; color: #fff;">KIMI</div>
+            <div style="font-size: 22px; font-weight: 700; color: #00d2ff; letter-spacing: 3px;">EXAM TRACKER PRO</div>
+            <div style="font-size: 16px; color: #b0c4de; margin-top: 6px;">نظام كامل لمتابعة دراستك</div>
+        </div>
+        <div style="margin-top: 30px; background: #1e2a3a; padding: 20px; border-radius: 30px; width: 100%;">
+            <div style="font-size: 20px;">⏳ 0:00</div>
+            <div style="font-size: 20px; margin-top: 10px;">بنتذكر كثير... <span style="color: #f0c27f;">بس مش عارف</span></div>
+            <div style="font-size: 26px; font-weight: 900; color: #fc5c7d;">مستواك الحقيقي؟</div>
+        </div>
+        <div style="font-size: 18px; color: #b0c4de; margin-top: 20px;">دلوقتي... كل حاجة قدامك <span style="color: #00d2ff;">في مكان واحد.</span></div>
+        <div style="margin-top: 15px; font-size: 14px; color: #6a82fb;">0:06 ...</div>
+        <div style="margin-top: 20px; background: #00d2ff22; padding: 8px 24px; border-radius: 40px; border: 1px solid #00d2ff;">
+            <span style="font-weight: 900;">Let's Open It.</span> <span style="color: #4ade80;">100%</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: الترحيب + المواد -->
+    <div class="slide" data-index="1">
+        <div style="width: 100%; text-align: right;">
+            <div style="font-size: 24px; font-weight: 900;">👋 Welcome back, Kimi!</div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                <span class="badge" style="background:#3b4e6b;">Arabic <span style="color:#4ade80;">85%</span></span>
+                <span class="badge" style="background:#3b4e6b;">English <span style="color:#4ade80;">78%</span></span>
+                <span class="badge" style="background:#3b4e6b;">Programming <span style="color:#4ade80;">92%</span></span>
+                <span class="badge" style="background:#3b4e6b;">History <span style="color:#f0c27f;">70%</span></span>
+            </div>
+            <div style="display: flex; gap: 30px; margin-top: 20px; justify-content: center;">
+                <div><span style="font-size: 40px; font-weight: 900; color:#00d2ff;">2,450</span><br><span style="font-size:14px; color:#b0c4de;">XP</span></div>
+                <div><span style="font-size: 40px; font-weight: 900; color:#f0c27f;">12</span><br><span style="font-size:14px; color:#b0c4de;">اختبار</span></div>
+            </div>
+        </div>
+        <div class="highlight-box" style="margin-top: 15px;">
+            <div style="font-weight:700; font-size:18px;">📊 Dashboard</div>
+            <div style="font-size:14px; color:#b0c4de;">لكل مادة</div>
+            <div style="font-size:14px; margin-top:5px;">⏱ 0:18</div>
+            <div style="font-size:14px; color:#00d2ff;">تتبع درجاتك</div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Recent Tests -->
+    <div class="slide" data-index="2">
+        <div style="font-size: 22px; font-weight: 900;">📋 Recent Tests</div>
+        <table class="table-mini" style="margin-top: 10px;">
+            <tr style="color:#b0c4de; font-size:12px;"><td>Test</td><td>Date</td><td>Score</td><td>Status</td></tr>
+            <tr><td>Test 1</td><td>2024-05-10</td><td>45/50</td><td class="status-done">✅ Done</td></tr>
+            <tr><td>Test 2</td><td>2024-05-15</td><td>40/50</td><td class="status-done">✅ Done</td></tr>
+            <tr><td>Test 3</td><td>2024-05-20</td><td>38/50</td><td class="status-done">✅ Done</td></tr>
+            <tr><td>Test 4</td><td>2024-05-25</td><td>47/50</td><td class="status-done">✅ Done</td></tr>
+        </table>
+        <div style="margin-top: 15px; font-size: 40px;">✓</div>
+        <div style="color:#4ade80; font-weight:900;">Done</div>
+    </div>
+
+    <!-- SLIDE 4: تحليل الأداء -->
+    <div class="slide" data-index="3">
+        <div style="font-size: 22px; font-weight: 900;">📈 تحليل الأداء</div>
+        <div style="width:100%; margin-top:10px;">
+            <div class="chart-bar"><span class="label">Excellent</span><div class="line"><div class="fill" style="--target:40%;"></div></div><span>40%</span></div>
+            <div class="chart-bar"><span class="label">Good</span><div class="line"><div class="fill" style="--target:30%;"></div></div><span>30%</span></div>
+            <div class="chart-bar"><span class="label">Average</span><div class="line"><div class="fill" style="--target:20%;"></div></div><span>20%</span></div>
+            <div class="chart-bar"><span class="label">Weak</span><div class="line"><div class="fill" style="--target:10%;"></div></div><span>10%</span></div>
+        </div>
+        <div style="margin-top: 20px; font-size: 60px; font-weight: 900; color:#00d2ff;">78%</div>
+        <div style="color:#b0c4de;">Score Progress</div>
+    </div>
+
+    <!-- SLIDE 5: Weak Topics -->
+    <div class="slide" data-index="4">
+        <div style="font-size: 22px; font-weight: 900; color:#fc5c7d;">⚠️ المواضيع الضعيفة</div>
+        <div style="width:100%; margin-top:15px;">
+            <div class="chart-bar"><span class="label">Grammar</span><div class="line"><div class="fill" style="--target:40%; background:linear-gradient(90deg,#fc5c7d,#f0c27f);"></div></div><span>40%</span></div>
+            <div class="chart-bar"><span class="label">Vocabulary</span><div class="line"><div class="fill" style="--target:60%; background:linear-gradient(90deg,#fc5c7d,#f0c27f);"></div></div><span>60%</span></div>
+            <div class="chart-bar"><span class="label">Reading</span><div class="line"><div class="fill" style="--target:30%; background:linear-gradient(90deg,#fc5c7d,#f0c27f);"></div></div><span>30%</span></div>
+            <div class="chart-bar"><span class="label">Listening</span><div class="line"><div class="fill" style="--target:70%; background:linear-gradient(90deg,#fc5c7d,#f0c27f);"></div></div><span>70%</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: Most Mistakes -->
+    <div class="slide" data-index="5">
+        <div style="font-size: 22px; font-weight: 900;">❌ أكثر الأخطاء</div>
+        <div style="width:100%; text-align:right; margin-top:15px; background:#1e2a3a; padding:20px; border-radius:20px;">
+            <div style="display:flex; gap:10px; align-items:center; margin:8px 0;"><span style="color:#f0c27f; font-weight:900;">1.</span> Grammar mistakes</div>
+            <div style="display:flex; gap:10px; align-items:center; margin:8px 0;"><span style="color:#f0c27f; font-weight:900;">2.</span> Spelling mistakes</div>
+            <div style="display:flex; gap:10px; align-items:center; margin:8px 0;"><span style="color:#f0c27f; font-weight:900;">3.</span> Wrong tense</div>
+            <div style="display:flex; gap:10px; align-items:center; margin:8px 0;"><span style="color:#f0c27f; font-weight:900;">4.</span> Punctuation</div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Goals -->
+    <div class="slide" data-index="6">
+        <div style="font-size: 22px; font-weight: 900;">🎯 أهدافك</div>
+        <div class="highlight-box" style="margin-top:10px;">
+            <div>Target Average: <span style="color:#00d2ff; font-weight:900;">85%</span></div>
+            <div style="margin-top:8px;">This Month: <span style="color:#4ade80; font-weight:900;">90%</span></div>
+            <div style="margin-top:8px;">Target Test Score: <span style="color:#f0c27f; font-weight:900;">80%+</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Level + XP + Badges -->
+    <div class="slide" data-index="7">
+        <div style="font-size: 20px; font-weight: 900;">🏆 Level + XP</div>
+        <div style="display:flex; gap:30px; margin:15px 0;">
+            <div><span class="xp-number">2,450</span><br><span style="color:#b0c4de;">Total XP</span></div>
+            <div><span class="xp-number">12</span><br><span style="color:#b0c4de;">Level</span></div>
+        </div>
+        <div style="width:100%; background:#1e2a3a; border-radius:30px; height:14px; overflow:hidden;">
+            <div style="width:82%; height:100%; background:linear-gradient(90deg,#f0c27f,#fc5c7d); border-radius:30px;"></div>
+        </div>
+        <div style="color:#b0c4de; font-size:14px; margin-top:4px;">Next Level: 3,000 XP</div>
+        <div class="badge-group" style="margin-top:15px;">
+            <span class="badge">🏅 First Test</span>
+            <span class="badge">📌 Consistent</span>
+            <span class="badge">⭐ High Score</span>
+            <span class="badge">🎯 Perfectionist</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: السعر -->
+    <div class="slide" data-index="8">
+        <div style="font-size: 22px; font-weight: 900;">💰 السعر</div>
+        <div style="font-size: 60px; font-weight: 900; color:#f0c27f; margin:10px 0;">40</div>
+        <div style="font-size: 24px; color:#b0c4de;">جنيته فقط</div>
+        <div style="background:#fc5c7d22; padding:15px; border-radius:30px; border:2px dashed #fc5c7d; margin-top:15px;">
+            <div style="font-size: 20px; font-weight:900;">الأولى 30 شخص فقط</div>
+            <div style="font-size: 36px; font-weight:900; color:#4ade80;">20 جنية</div>
+        </div>
+        <div class="btn-primary pulse" style="margin-top:25px;">🚀 ابدا رحلتك</div>
+        <div style="margin-top:10px; font-size:14px; color:#b0c4de;">نحو التفوق الآن. ❤️</div>
+        <div style="margin-top:5px; font-size:18px; font-weight:900; color:#00d2ff;">You can do it!</div>
+    </div>
+
+    <!-- شريط التقدم -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const slides = document.querySelectorAll('.slide');
+        const progressFill = document.getElementById('progressFill');
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+        let interval = null;
+        let isTransitioning = false;
+
+        function goToSlide(index) {
+            if (isTransitioning) return;
+            if (index < 0 || index >= totalSlides) return;
+            isTransitioning = true;
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                    // إعادة تشغيل الأنيميشن للأشرطة
+                    const fills = slide.querySelectorAll('.fill');
+                    fills.forEach(fill => {
+                        const target = fill.style.getPropertyValue('--target');
+                        if (target) {
+                            fill.style.width = '0%';
+                            setTimeout(() => {
+                                fill.style.width = target;
+                            }, 100);
+                        }
+                    });
+                }
+            });
+
+            currentIndex = index;
+            const progress = ((index + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 900);
+        }
+
+        function nextSlide() {
+            let next = currentIndex + 1;
+            if (next >= totalSlides) {
+                // لو خلصنا، نرجع للأول (loop)
+                next = 0;
+            }
+            goToSlide(next);
+        }
+
+        function startAutoPlay() {
+            if (interval) clearInterval(interval);
+            interval = setInterval(nextSlide, 4500); // كل 4.5 ثانية
+        }
+
+        // بدء التشغيل
+        goToSlide(0);
+        startAutoPlay();
+
+        // إيقاف مؤقت عند الضغط (اختياري)
+        document.getElementById('videoContainer').addEventListener('click', function() {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            } else {
+                startAutoPlay();
+            }
+        });
+
+        // إعادة ضبط الشرائط عند التحميل
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                slides.forEach(slide => {
+                    const fills = slide.querySelectorAll('.fill');
+                    fills.forEach(fill => {
+                        const target = fill.style.getPropertyValue('--target');
+                        if (target && slide.classList.contains('active')) {
+                            fill.style.width = target;
+                        }
+                    });
+                });
+            }, 500);
+        });
+    })();
+</script>
+
+</body>
+</html>
