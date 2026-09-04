@@ -128,7 +128,6 @@
             color: #00d2ff;
         }
 
-        /* تنسيق الزر مع الرابط */
         .btn-primary {
             display: inline-block;
             background: linear-gradient(135deg, #fc5c7d, #6a82fb);
@@ -246,6 +245,29 @@
 
         .arabic-text { direction: rtl; }
         .english-text { direction: ltr; }
+
+        /* تنسيق شارة العرض المحدود */
+        .limited-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fc5c7d;
+            padding: 4px 24px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 900;
+            color: #fff;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(252, 92, 125, 0.4);
+        }
+
+        .price-strikethrough {
+            text-decoration: line-through;
+            color: #6a82fb;
+            font-size: 28px;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -385,21 +407,40 @@
         </div>
     </div>
 
-    <!-- SLIDE 9: السعر والزر -->
+    <!-- SLIDE 9: السعر والزر - نسخة تخانية 🔥 -->
     <div class="slide" data-index="8">
         <div style="font-size: 34px; font-weight: 900;">💰 السعر</div>
-        <div style="font-size: 80px; font-weight: 900; color:#f0c27f; margin:8px 0;">40</div>
-        <div style="font-size: 28px; color:#b0c4de;">جنيته فقط</div>
-        <div style="background:#fc5c7d22; padding:20px 40px; border-radius:30px; border:2px dashed #fc5c7d; margin-top:16px;">
-            <div style="font-size: 26px; font-weight:900;">الأولى 30 شخص فقط</div>
-            <div style="font-size: 48px; font-weight:900; color:#4ade80;">20 جنية</div>
+        
+        <!-- السعر مع خط وسط -->
+        <div style="margin: 8px 0;">
+            <span style="font-size: 32px; color: #6a82fb; text-decoration: line-through; margin-left: 15px;">40</span>
+            <span style="font-size: 80px; font-weight: 900; color: #4ade80;">20</span>
+            <span style="font-size: 28px; color: #b0c4de;">جنية</span>
         </div>
-        <!-- زر مع الرابط -->
-        <a href="https://www.instagram.com/kimi_notes1?igsi=MTZzNGp1ZTN5YnZmMA==" target="_blank" class="btn-primary pulse" style="margin-top:24px;">
+        <div style="font-size: 18px; color: #fc5c7d; font-weight: 700; margin-top: -10px;">🔥 عرض لفترة محدودة</div>
+
+        <!-- عرض محدود جدًا مع شارة -->
+        <div style="background:#fc5c7d22; padding:25px 40px; border-radius:30px; border:2px dashed #fc5c7d; margin-top:16px; position: relative; max-width: 600px; width: 100%;">
+            <div class="limited-badge">⚡ عرض محدود جدًا</div>
+            <div style="font-size: 24px; font-weight:900; margin-top: 10px;">أول 30 شخص فقط</div>
+            <div style="font-size: 42px; font-weight:900; color:#4ade80;">20 جنية</div>
+            <div style="font-size: 18px; color: #f0c27f; margin-top: 6px; font-weight: 700;">
+                🕒 باقي <span style="color: #fc5c7d; font-size: 24px;">12</span> مكان فقط!
+            </div>
+        </div>
+
+        <!-- زرار تخاني -->
+        <a href="https://www.instagram.com/kimi_notes1?igsi=MTZzNGp1ZTN5YnZmMA==" target="_blank" class="btn-primary pulse" style="margin-top:24px; font-size: 32px; padding: 22px 70px;">
             🚀 ابدأ رحلتك
         </a>
+        
         <div style="margin-top:12px; font-size:20px; color:#b0c4de;">نحو التفوق الآن. ❤️</div>
         <div style="margin-top:4px; font-size:24px; font-weight:900; color:#00d2ff;">You can do it!</div>
+        
+        <!-- تحذير تخاني -->
+        <div style="margin-top: 10px; font-size: 15px; color: #fc5c7d; font-weight: 700; background: #fc5c7d11; padding: 8px 20px; border-radius: 40px; border: 1px solid #fc5c7d44;">
+            ⚠️ السعر هيرجع 40 جنيه بعد أول 30 شخص
+        </div>
     </div>
 
     <!-- شريط التقدم -->
