@@ -23,7 +23,6 @@
             padding: 20px;
         }
 
-        /* الفيديو بالعرض - نسبة 16:9 */
         .video-container {
             width: 1280px;
             max-width: 100%;
@@ -62,7 +61,6 @@
             z-index: 10;
         }
 
-        /* شريط التقدم */
         .progress-bar {
             position: absolute;
             bottom: 20px;
@@ -82,7 +80,6 @@
             transition: width 0.2s linear;
         }
 
-        /* عناصر مشتركة */
         .title-lg {
             font-size: 56px;
             font-weight: 900;
@@ -131,7 +128,9 @@
             color: #00d2ff;
         }
 
+        /* تنسيق الزر مع الرابط */
         .btn-primary {
+            display: inline-block;
             background: linear-gradient(135deg, #fc5c7d, #6a82fb);
             padding: 20px 60px;
             border-radius: 60px;
@@ -141,7 +140,12 @@
             border: none;
             box-shadow: 0 10px 30px #fc5c7d55;
             margin-top: 20px;
-            cursor: default;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
         }
 
         .stats-grid {
@@ -228,7 +232,6 @@
             font-weight: 700;
         }
 
-        /* تنسيق الصفوف المزدوجة للعرض */
         .split-row {
             display: flex;
             gap: 40px;
@@ -241,7 +244,6 @@
             flex: 1;
         }
 
-        /* تحسين النصوص */
         .arabic-text { direction: rtl; }
         .english-text { direction: ltr; }
     </style>
@@ -383,7 +385,7 @@
         </div>
     </div>
 
-    <!-- SLIDE 9: السعر -->
+    <!-- SLIDE 9: السعر والزر -->
     <div class="slide" data-index="8">
         <div style="font-size: 34px; font-weight: 900;">💰 السعر</div>
         <div style="font-size: 80px; font-weight: 900; color:#f0c27f; margin:8px 0;">40</div>
@@ -392,7 +394,10 @@
             <div style="font-size: 26px; font-weight:900;">الأولى 30 شخص فقط</div>
             <div style="font-size: 48px; font-weight:900; color:#4ade80;">20 جنية</div>
         </div>
-        <div class="btn-primary pulse" style="margin-top:24px;">🚀 ابدا رحلتك</div>
+        <!-- زر مع الرابط -->
+        <a href="https://www.instagram.com/kimi_notes1?igsi=MTZzNGp1ZTN5YnZmMA==" target="_blank" class="btn-primary pulse" style="margin-top:24px;">
+            🚀 ابدأ رحلتك
+        </a>
         <div style="margin-top:12px; font-size:20px; color:#b0c4de;">نحو التفوق الآن. ❤️</div>
         <div style="margin-top:4px; font-size:24px; font-weight:900; color:#00d2ff;">You can do it!</div>
     </div>
